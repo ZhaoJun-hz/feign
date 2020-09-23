@@ -248,6 +248,7 @@ public abstract class Feign {
     }
 
     public <T> T target(Target<T> target) {
+      // 调build()方法后，调用newInstance()方法，该类调用newInstance()方法是一个抽象方法，实现在ReflectiveFeign类里面
       return build().newInstance(target);
     }
 

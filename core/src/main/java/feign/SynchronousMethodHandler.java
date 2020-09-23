@@ -75,6 +75,7 @@ final class SynchronousMethodHandler implements MethodHandler {
     Retryer retryer = this.retryer.clone();
     while (true) {
       try {
+        // 执行后续逻辑请求等
         return executeAndDecode(template);
       } catch (RetryableException e) {
         try {
@@ -105,6 +106,7 @@ final class SynchronousMethodHandler implements MethodHandler {
     Response response;
     long start = System.nanoTime();
     try {
+      // 这个client是LoadBalancerFeignClient
       response = client.execute(request, options);
     } catch (IOException e) {
       if (logLevel != Logger.Level.NONE) {

@@ -64,6 +64,7 @@ public interface Client {
 
     @Override
     public Response execute(Request request, Options options) throws IOException {
+      // 最终发起请求，通过HttpURLConnection
       HttpURLConnection connection = convertAndSend(request, options);
       return convertResponse(connection, request);
     }

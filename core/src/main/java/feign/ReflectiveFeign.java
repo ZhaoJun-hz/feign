@@ -49,6 +49,8 @@ public class ReflectiveFeign extends Feign {
   @SuppressWarnings("unchecked")
   @Override
   public <T> T newInstance(Target<T> target) {
+    // 方法对应的增强处理
+    // key是ResumeServiceFeignClient#findDefaultResumeState(Long)，value是SynchronousMethodHandler
     Map<String, MethodHandler> nameToHandler = targetToHandlersByName.apply(target);
     Map<Method, MethodHandler> methodToHandler = new LinkedHashMap<Method, MethodHandler>();
     List<DefaultMethodHandler> defaultMethodHandlers = new LinkedList<DefaultMethodHandler>();
@@ -64,7 +66,9 @@ public class ReflectiveFeign extends Feign {
         methodToHandler.put(method, nameToHandler.get(Feign.configKey(target.type(), method)));
       }
     }
+
     InvocationHandler handler = factory.create(target, methodToHandler);
+    // 最终FeignClientFactoryBean反悔了JDK动态代理对象，增强逻辑在FeignInvocationHandler中
     T proxy = (T) Proxy.newProxyInstance(target.type().getClassLoader(),
         new Class<?>[] {target.type()}, handler);
 
@@ -100,6 +104,7 @@ public class ReflectiveFeign extends Feign {
         return toString();
       }
 
+      // 具体方法的增强逻辑又交给了对应的MethodHandler来处理，SynchronousMethodHandler
       return dispatch.get(method).invoke(args);
     }
 
